@@ -94,7 +94,10 @@ async function saveToFeishuBase(data: any) {
 
   const tableId = tableIds[type];
   
-  if (!baseId || !tableId || !appId || !appSecret) return;
+  if (!baseId || !tableId || !appId || !appSecret) {
+    console.warn(`[Feishu Debug] Missing credentials for ${type}. Check environment variables.`);
+    return;
+  }
 
   // 1. Get Tenant Access Token
   const tokenRes = await fetch("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", {
@@ -106,7 +109,10 @@ async function saveToFeishuBase(data: any) {
   const tokenData = await tokenRes.json() as any;
   const { tenant_access_token } = tokenData;
 
-  if (!tenant_access_token) return;
+  if (!tenant_access_token) {
+    console.error("[Feishu Debug] Failed to get tenant_access_token.");
+    return;
+  }
 
   // 2. Map fields based on type
   let fields: any = {
@@ -114,49 +120,53 @@ async function saveToFeishuBase(data: any) {
     "状态": "待处理"
   };
 
-  if (type === 'bazi') {
-    fields["客户姓名"] = customerName;
-    fields["性别"] = details.gender === 'male' ? '乾 (男)' : '坤 (女)';
-    const birthDateTs = new Date(details.birthDate).getTime();
-    if (!isNaN(birthDateTs)) fields["出生日期"] = birthDateTs;
-    fields["出生时间"] = details.birthTime;
-    fields["出生城市"] = details.city;
-    fields["诉求内容"] = details.intent;
-  } else if (type === 'oracle') {
-    fields["客户姓名"] = customerName;
-    fields["诉求内容"] = details.intent;
-    fields["占卜数字"] = details.numbers?.join(', ');
-  } else if (type === 'marriage') {
-    fields["男方姓名"] = details.maleName;
-    const maleBirthTs = new Date(details.maleBirthDate).getTime();
-    if (!isNaN(maleBirthTs)) fields["男方生日"] = maleBirthTs;
-    fields["男方时间"] = details.maleBirthTime;
-    fields["男方城市"] = details.maleCity;
-    fields["女方姓名"] = details.femaleName;
-    const femaleBirthTs = new Date(details.femaleBirthDate).getTime();
-    if (!isNaN(femaleBirthTs)) fields["女方生日"] = femaleBirthTs;
-    fields["女方时间"] = details.femaleBirthTime;
-    fields["女方城市"] = details.femaleCity;
-    fields["合婚诉求"] = details.intent;
-  } else if (type === 'planning') {
-    fields["客户姓名"] = customerName;
-    fields["性别"] = details.gender === 'male' ? '乾 (男)' : '坤 (女)';
-    const birthDateTs = new Date(details.birthDate).getTime();
-    if (!isNaN(birthDateTs)) fields["出生日期"] = birthDateTs;
-    fields["出生时间"] = details.birthTime;
-    fields["手机号码"] = details.phone;
-    fields["目前城市"] = details.city;
-    fields["当前身份"] = details.status === 'student' ? '在校生' : '社会人士';
-    fields["就读学校/单位"] = details.currentSchool;
-    fields["期望专业/行业"] = details.expectedMajor;
-    fields["期望发展城市"] = details.expectedCity;
-    fields["性格描述"] = details.personality;
-    fields["人生目标"] = details.lifeGoals;
-    fields["家庭情况"] = details.familySituation;
+  try {
+    if (type === 'bazi') {
+      fields["客户姓名"] = customerName;
+      fields["性别"] = details.gender === 'male' ? '乾 (男)' : '坤 (女)';
+      const birthDateTs = new Date(details.birthDate).getTime();
+      if (!isNaN(birthDateTs)) fields["出生日期"] = birthDateTs;
+      fields["出生时间"] = details.birthTime;
+      fields["出生城市"] = details.city;
+      fields["诉求内容"] = details.intent;
+    } else if (type === 'oracle') {
+      fields["客户姓名"] = customerName;
+      fields["诉求内容"] = details.intent;
+      fields["占卜数字"] = details.numbers?.join(', ');
+    } else if (type === 'marriage') {
+      fields["男方姓名"] = details.maleName;
+      const maleBirthTs = new Date(details.maleBirthDate).getTime();
+      if (!isNaN(maleBirthTs)) fields["男方生日"] = maleBirthTs;
+      fields["男方时间"] = details.maleBirthTime;
+      fields["男方城市"] = details.maleCity;
+      fields["女方姓名"] = details.femaleName;
+      const femaleBirthTs = new Date(details.femaleBirthDate).getTime();
+      if (!isNaN(femaleBirthTs)) fields["女方生日"] = femaleBirthTs;
+      fields["女方时间"] = details.femaleBirthTime;
+      fields["女方城市"] = details.femaleCity;
+      fields["合婚诉求"] = details.intent;
+    } else if (type === 'planning') {
+      fields["客户姓名"] = customerName;
+      fields["性别"] = details.gender === 'male' ? '乾 (男)' : '坤 (女)';
+      const birthDateTs = new Date(details.birthDate).getTime();
+      if (!isNaN(birthDateTs)) fields["出生日期"] = birthDateTs;
+      fields["出生时间"] = details.birthTime;
+      fields["手机号码"] = details.phone;
+      fields["目前城市"] = details.city;
+      fields["当前身份"] = details.status === 'student' ? '在校生' : '社会人士';
+      fields["就读学校/单位"] = details.currentSchool;
+      fields["期望专业/行业"] = details.expectedMajor;
+      fields["期望发展城市"] = details.expectedCity;
+      fields["性格描述"] = details.personality;
+      fields["人生目标"] = details.lifeGoals;
+      fields["家庭情况"] = details.familySituation;
+    }
+  } catch (e) {
+    console.error("[Feishu Debug] Error mapping fields:", e);
   }
 
   // 3. Insert Record
-  await fetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${baseId}/tables/${tableId}/records`, {
+  const insertRes = await fetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${baseId}/tables/${tableId}/records`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${tenant_access_token}`,
@@ -164,4 +174,11 @@ async function saveToFeishuBase(data: any) {
     },
     body: JSON.stringify({ fields }),
   });
+
+  if (!insertRes.ok) {
+    const errData = await insertRes.json();
+    console.error(`[Feishu Debug] Insert Failed for ${type}:`, JSON.stringify(errData));
+  } else {
+    console.log(`[Feishu Debug] Successfully saved ${type} record.`);
+  }
 }
