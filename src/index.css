@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #D4AF37;
+  --color-charcoal: #121212;
+  --color-ink: #1A1A1A;
+  --font-serif: "Playfair Display", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-charcoal text-white font-sans antialiased;
+  }
+}
+
+.dark-luxury-card {
+  @apply bg-ink border border-gold/30 rounded-xl p-6 shadow-2xl;
+}
+
+.gold-text {
+  @apply text-gold font-serif;
+}
+
+.gold-button {
+  @apply bg-gold text-charcoal font-bold py-3 px-8 rounded-full hover:bg-gold/80 transition-all duration-300 shadow-lg shadow-gold/20;
+}
+
+.ritual-breathing {
+  animation: breathe 5s ease-in-out infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(212, 175, 55, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.4);
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
