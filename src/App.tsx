@@ -52,7 +52,7 @@ export default function App() {
               />
             </div>
             <div>
-              <h1 className="gold-text text-xl leading-tight">bz49.estt.online</h1>
+              <h1 className="gold-text text-xl leading-tight">bz49.vercel.app</h1>
               <p className="text-[10px] text-gold/50 tracking-[0.2em] uppercase">Metaphysics Studio</p>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function App() {
       <footer className="py-12 border-t border-gold/5 bg-charcoal">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-gold/30 text-xs tracking-widest">
-            © 2026 ESTT.ONLINE METAPHYSICS. ALL RIGHTS RESERVED.
+            © 2026 VERCEL.APP METAPHYSICS. ALL RIGHTS RESERVED.
           </div>
           
           <div className="flex items-center gap-6">
