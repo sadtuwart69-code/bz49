@@ -45,6 +45,17 @@ export const Planning: React.FC = () => {
         `.trim(),
         type: 'planning'
       })
+    }).then(async res => {
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Failed to notify Feishu:", res.status, errorData.error);
+        alert(`提交失败: ${errorData.error || '未知错误'}`);
+        setSubmitted(false);
+      }
+    }).catch(err => {
+      console.error("Error notifying Feishu:", err);
+      alert("提交出错，请检查网络或稍后再试。");
+      setSubmitted(false);
     });
   };
 
