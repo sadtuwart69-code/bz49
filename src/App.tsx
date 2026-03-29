@@ -52,7 +52,7 @@ export default function App() {
               />
             </div>
             <div>
-              <h1 className="gold-text text-xl leading-tight">bz49.vercel.app</h1>
+              <h1 className="gold-text text-xl leading-tight">根基八字，为卿为相</h1>
               <p className="text-[10px] text-gold/50 tracking-[0.2em] uppercase">Metaphysics Studio</p>
             </div>
           </div>
