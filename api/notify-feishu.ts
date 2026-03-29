@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     tag: "button",
                     text: { tag: "plain_text", content: "进入管理后台" },
                     type: "primary",
-                    url: "https://bz49.vercel.app/admin",
+                    url: "https://bz49.estt.online/admin",
                   },
                 ],
               },
